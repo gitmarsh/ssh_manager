@@ -1,5 +1,6 @@
 # ssh_manager
 A simple tool for managing mutliple ssh connections
 
-" mkdir ./server_aliases "  to use the script.  Need to be in the same directory as the script.
-Add an aliases in to your .bashrc (or equivalent) to make it accessing the tool quicker.
+Make a directory called "server_aliases" in the same directory as the script in order to save aliases for later use.
+" mkdir ./server_aliases "
+Optionally add an aliases to your .bashrc (or equivalent) that points to this script to make it running the tool easier.

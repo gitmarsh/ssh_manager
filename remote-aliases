@@ -1,0 +1,110 @@
+#!/bin/bash
+
+
+red="\e[31m"
+green="\e[32m"
+yellow="\e[33m"
+blue="\e[34m"
+purple="\e[35m"
+cyan="\e[36m"
+grey="\e[37m"
+reset="\e[0m"
+
+function newserver () {
+read -p $'\e[35mEnter server ip\e[0m: ' serverip
+read -p  $'\e[34mEnter username\e[0m: ' user
+read -p $'\e[36mEnter an  alias\e[0m: ' nickname
+sleep 1
+echo -e "${green}Quick SSH Entry Added!${reset}"
+echo "ssh $user@$serverip"  >> ~/.scripts/sshkeymanager/server_aliases/"$nickname($serverip)"
+chmod +x ~/.scripts/sshkeymanager/server_aliases/"$nickname($serverip)"
+sleep 1
+echo -e "${cyan}Connect to the new server${reset}: (y)yes/(n)no"
+read -n 1 -s answer 
+if [ "$answer" == "y" ]
+then
+	sh ~/.scripts/sshkeymanager/server_aliases/"$nickname($serverip)"
+else
+	sleep 1 && echo "SSH Connect Closing..." && sleep 1
+    exit
+fi
+}
+
+function connect () {
+     ls -1 ~/.scripts/sshkeymanager/server_aliases/ | cat -n
+echo -e "\n${cyan}Enter server name you wish to connect to${reset}\n"
+read -n 1 -s answer2
+serverid="$( ls -1 ~/.scripts/sshkeymanager/server_aliases/ | sed -n "$answer2"p | awk "{print $1}" )"
+sleep 1 
+echo -e "${yellow}Connecting.....${reset} ${purple}$serverid${reset}\n"
+sleep 1
+sh ~/.scripts/sshkeymanager/server_aliases/"$serverid"
+}
+
+function delete () {
+	ls -1 ~/.scripts/sshkeymanager/server_aliases/ | cat -n
+echo -e "\n${cyan}Enter server name you wish to delete${reset}\n"
+read -n 1 -s answer2
+serverid="$( ls -1 ~/.scripts/sshkeymanager/server_aliases/ | sed -n "$answer2"p | awk "{print $1}" )"
+sleep 1
+echo -e "${red}Are you sure you wish to delete this server from this list?${reset}: (y)Yes/(n)No"
+read -n 1 -s confirm
+if [ "$confirm" == "y" ]
+then
+rm ~/.scripts/sshkeymanager/server_aliases/"$serverid"
+echo "Server has been deleted: return to beginning?: (y)Yes/(n)Exit"
+read -n 1 -s response
+	if [ "$response" == "y" ]
+	then sh ~/.scripts/sshkeymanager/remote-aliases
+	else
+		exit
+	fi
+else
+	exit
+fi
+}
+
+function list () {
+	ls -1 ~/.scripts/sshkeymanager/server_aliases/ | cat -n
+	echo -e "${cyan}Select an option${reset}:\n\n1.) ${green}Connect To Server${reset}  2.) ${purple}List Servers${reset}   3.) ${yellow}Add New Server${reset}   4.) ${red}Delete Server${reset}   5.) Exit\n"
+read -n 1 -s firstab
+sleep 1 
+if [ "$firstab" == "1" ]
+then connect
+fi
+if [ "$firstab" == "2" ]
+then list
+fi
+if [ "$firstab" == "3" ]
+then newsever
+fi
+if [ "$firstab" == "4" ]
+then delete
+fi
+if [ "$firstab" == "5" ]
+then exit
+fi
+
+}
+
+
+echo -e "${green}########################################################################${reset}"
+echo -e "${green}###############${reset} ${red}SSH QUICK CONNECT / SERVER ALIASING${reset} ${green}####################${reset}\n"
+echo -e "${cyan}Select an option${reset}:\n\n1.) ${green}Connect To Server${reset}  2.) ${purple}List Servers${reset}   3.) ${yellow}Add New Server${reset}   4.) ${red}Delete Server${reset}   5.) Exit\n"
+read -n 1 -s firstab
+sleep 1 
+if [ "$firstab" == "1" ]
+then connect
+fi
+if [ "$firstab" == "2" ]
+then list
+fi
+if [ "$firstab" == "3" ]
+then newserver
+fi
+if [ "$firstab" == "4" ]
+then delete
+fi
+if [ "$firstab" == "5" ]
+then exit
+fi
